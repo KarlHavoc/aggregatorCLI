@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/KarlHavoc/gatorCLI/main/internal/config"
+	"github.com/KarlHavoc/aggregatorCLI/internal/config"
 )
 
 type state struct {
