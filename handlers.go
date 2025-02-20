@@ -40,7 +40,7 @@ func handlerRegister(s *state, cmd command) error {
 		log.Fatal(err)
 	}
 	s.cfg.SetUser(name)
-	fmt.Printf("user %s was created", name)
+	fmt.Printf("user %s was created\n", name)
 	log.Printf("user: %v\ncreated_at: %v\nupdated_at: %v\nname: %v\n", user.ID, user.CreatedAt, user.UpdatedAt, user.Name.String)
 	return nil
 }
