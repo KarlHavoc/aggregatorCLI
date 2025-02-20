@@ -40,7 +40,7 @@ func handlerRegister(s *state, cmd command) error {
 		log.Fatal(err)
 	}
 	s.cfg.SetUser(name)
-	fmt.Printf("user %s was created ", name)
+	fmt.Printf("user %s was created", name)
 	log.Printf("user: %v\ncreated_at: %v\nupdated_at: %v\nname: %v\n", user.ID, user.CreatedAt, user.UpdatedAt, user.Name.String)
 	return nil
 }
@@ -48,9 +48,25 @@ func handlerRegister(s *state, cmd command) error {
 func handlerReset(s *state, cmd command) error {
 	err := s.db.DeleteUsers(context.Background())
 	if err != nil {
-		log.Print("failed to delete users table")
+		log.Println("failed to delete users table")
 	}
-	fmt.Printf("deleted all users from db")
+	fmt.Println("deleted all users from db")
 	os.Exit(0)
+	return nil
+}
+
+func handlerUsers(s *state, cmd command) error {
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, user := range users {
+		if s.cfg.CurrentUserName == user.Name.String {
+			fmt.Printf("%s (current user)\n", user.Name.String)
+			continue
+		}
+		fmt.Println(user.Name.String)
+	}
+
 	return nil
 }
