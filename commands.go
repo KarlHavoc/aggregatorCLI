@@ -1,7 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"html"
+	"log"
+
+	internal "github.com/KarlHavoc/aggregatorCLI/internal/rss"
 )
 
 type command struct {
@@ -23,5 +29,20 @@ func (c commands) run(s *state, cmd command) error {
 		return errors.New("command not found")
 	}
 	return com(s, cmd)
+
+}
+
+func (c commands) aggregate(s *state, cmd command) error {
+	rss_feed, err := internal.FetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(html.UnescapeString(rss_feed.Channel.Title))
+	fmt.Println(rss_feed.Channel.Description)
+	for _, item := range rss_feed.Channel.Item {
+		fmt.Println(html.UnescapeString(item.Title))
+		fmt.Println(html.UnescapeString(item.Description))
+	}
+	return nil
 
 }
