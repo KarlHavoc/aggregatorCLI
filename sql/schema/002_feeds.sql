@@ -5,7 +5,7 @@ CREATE TABLE feeds (
     updated_at TIMESTAMP
     name TEXT,
     url UNIQUE TEXT,
-    user_id uuid references users
+    user_id uuid references users ON DELETE CASCADE
     
 
 ) -- +goose Down
