@@ -46,3 +46,4 @@ func (c commands) aggregate(s *state, cmd command) error {
 	return nil
 
 }
+

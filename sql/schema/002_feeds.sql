@@ -1,12 +1,11 @@
--- +goose UP
+-- +goose Up
 CREATE TABLE feeds (
-    id INTEGER
-    created_at TIMESTAMP
-    updated_at TIMESTAMP
-    name TEXT,
-    url UNIQUE TEXT,
-    user_id uuid references users ON DELETE CASCADE
-    
-
-) -- +goose Down
-DROP TABLE feeds
+    id uuid PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    name TEXT NOT NULL,
+    url TEXT NOT NULL UNIQUE,
+    user_id uuid NOT NULL references users(id) ON DELETE CASCADE
+);
+-- +goose Down
+DROP TABLE feeds;

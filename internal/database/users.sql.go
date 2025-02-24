@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,7 +22,7 @@ type CreateUserParams struct {
 	ID        uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Name      sql.NullString
+	Name      string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -57,15 +56,26 @@ SELECT name FROM users
 WHERE name = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, name sql.NullString) (sql.NullString, error) {
+func (q *Queries) GetUser(ctx context.Context, name string) (string, error) {
 	row := q.db.QueryRowContext(ctx, getUser, name)
+	err := row.Scan(&name)
+	return name, err
+}
+
+const getUserName = `-- name: GetUserName :one
+SELECT name FROM users
+WHERE id = $1
+`
+
+func (q *Queries) GetUserName(ctx context.Context, id uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getUserName, id)
+	var name string
 	err := row.Scan(&name)
 	return name, err
 }
 
 const getUsers = `-- name: GetUsers :many
 SELECT id, created_at, updated_at, name FROM users
-ORDER BY name
 `
 
 func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
