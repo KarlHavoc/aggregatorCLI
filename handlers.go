@@ -126,5 +126,5 @@ func handlerFeeds(s *state, cmd command) error {
 }
 
 func handlerFollow(s *state, cmd command) error {
-	
+	return nil
 }
