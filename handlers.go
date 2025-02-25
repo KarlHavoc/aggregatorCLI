@@ -125,6 +125,28 @@ func handlerFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollow(s *state, cmd command) error {
-	return nil
+func handlerFollow(s *state, cmd command) (database.CreateFeedFollowsRow, error) {
+	if len(cmd.Arguments) != 1 {
+		log.Fatalf("useage: %v <url_to_follow>", cmd.Name)
+	}
+	url_to_follow := cmd.Arguments[0]
+	current_user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return database.CreateFeedFollowsRow{}, err
+	}
+	feed_id, err := s.db.GetFeed(context.Background(), url_to_follow)
+	if err != nil {
+		return database.CreateFeedFollowsRow{}, err
+	}
+	new_follow, err := s.db.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    current_user.ID,
+		FeedID:    feed_id,
+	})
+	if err != nil {
+		return database.CreateFeedFollowsRow{}, err
+	}
+	return new_follow, nil
 }
