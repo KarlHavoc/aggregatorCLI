@@ -35,7 +35,11 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("please enter a name")
 	}
 	name := cmd.Arguments[0]
-	user, err := s.db.CreateUser(context.Background(), database.CreateUserParams{uuid.New(), time.Now(), time.Now(), name})
+	user, err := s.db.CreateUser(context.Background(), database.CreateUserParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      name})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,6 +62,9 @@ func handlerReset(s *state, cmd command) error {
 
 func handlerUsers(s *state, cmd command) error {
 	users, err := s.db.GetUsers(context.Background())
+	if len(users) == 0 {
+		fmt.Println("No users registered\nUse the command | register <user_name> | to register a new user")
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,6 +110,16 @@ func handlerAddFeed(s *state, cmd command) error {
 	if err != nil {
 		return err
 	}
+	_, err = s.db.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID:    new_feed.UserID,
+		FeedID:    new_feed.ID,
+	})
+	if err != nil {
+		return err
+	}
 	fmt.Print(new_feed)
 	return nil
 }
@@ -125,18 +142,19 @@ func handlerFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollow(s *state, cmd command) (database.CreateFeedFollowsRow, error) {
+func handlerFollow(s *state, cmd command) error {
 	if len(cmd.Arguments) != 1 {
 		log.Fatalf("useage: %v <url_to_follow>", cmd.Name)
 	}
 	url_to_follow := cmd.Arguments[0]
 	current_user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	fmt.Println(current_user.Name)
 	if err != nil {
-		return database.CreateFeedFollowsRow{}, err
+		return err
 	}
 	feed_id, err := s.db.GetFeed(context.Background(), url_to_follow)
 	if err != nil {
-		return database.CreateFeedFollowsRow{}, err
+		return err
 	}
 	new_follow, err := s.db.CreateFeedFollows(context.Background(), database.CreateFeedFollowsParams{
 		ID:        uuid.New(),
@@ -146,7 +164,30 @@ func handlerFollow(s *state, cmd command) (database.CreateFeedFollowsRow, error)
 		FeedID:    feed_id,
 	})
 	if err != nil {
-		return database.CreateFeedFollowsRow{}, err
+		return err
 	}
-	return new_follow, nil
+	fmt.Printf("Feed name: %s\n", new_follow.FeedName)
+	fmt.Printf("Current user: %s\n", current_user.Name)
+	return nil
+}
+
+func handlerFollowing(s *state, cmd command) error {
+	current_user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
+	if err != nil {
+		return err
+	}
+	feeds_following, err := s.db.GetFeedFollowsForUser(context.Background(), current_user.ID)
+	if err != nil {
+		return err
+	}
+	for _, feeds := range feeds_following {
+		feed_name, err := s.db.GetFeedName(context.Background(), feeds.FeedID)
+		if err != nil {
+			return nil
+		}
+		fmt.Println("Following:")
+		fmt.Println(feed_name)
+
+	}
+	return nil
 }

@@ -14,15 +14,19 @@ import (
 
 const createFeedFollows = `-- name: CreateFeedFollows :one
 WITH inserted_feed_follows AS (
-    INSERT INTO feed_follows (id, created_at, updated_at, user_id, feed_id)
-    VALUES ($1, $2, $3, $4, $5)
-RETURNING id, created_at, updated_at, user_id, feed_id)
-SELECT inserted_feed_follows.id, inserted_feed_follows.created_at, inserted_feed_follows.updated_at, inserted_feed_follows.user_id, inserted_feed_follows.feed_id, feeds.name AS feed_name, users.name AS user_name
-FROM inserted_feed_follows
-INNER JOIN users
-ON users.id = user_id
-INNER JOIN feeds
-ON feed.id = feeds_id
+    INSERT INTO
+        feed_follows (id, created_at, updated_at, user_id, feed_id)
+    VALUES
+        ($1, $2, $3, $4, $5) RETURNING id, created_at, updated_at, user_id, feed_id
+)
+SELECT
+    inserted_feed_follows.id, inserted_feed_follows.created_at, inserted_feed_follows.updated_at, inserted_feed_follows.user_id, inserted_feed_follows.feed_id,
+    feeds.name AS feed_name,
+    users.name AS user_name
+FROM
+    inserted_feed_follows
+    INNER JOIN users ON users.id = user_id
+    INNER JOIN feeds ON feeds.id = feed_id
 `
 
 type CreateFeedFollowsParams struct {
@@ -62,4 +66,39 @@ func (q *Queries) CreateFeedFollows(ctx context.Context, arg CreateFeedFollowsPa
 		&i.UserName,
 	)
 	return i, err
+}
+
+const getFeedFollowsForUser = `-- name: GetFeedFollowsForUser :many
+    SELECT id, created_at, updated_at, user_id, feed_id
+    FROM feed_follows
+    WHERE user_id = $1
+`
+
+func (q *Queries) GetFeedFollowsForUser(ctx context.Context, userID uuid.UUID) ([]FeedFollow, error) {
+	rows, err := q.db.QueryContext(ctx, getFeedFollowsForUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []FeedFollow
+	for rows.Next() {
+		var i FeedFollow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.UserID,
+			&i.FeedID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

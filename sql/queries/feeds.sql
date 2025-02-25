@@ -9,5 +9,8 @@ SELECT * FROM feeds;
 -- name: GetFeed :one
 SELECT id FROM feeds
 WHERE url = $1;
+-- name: GetFeedName :one
+SELECT name FROM feeds
+WHERE id = $1;
 
 

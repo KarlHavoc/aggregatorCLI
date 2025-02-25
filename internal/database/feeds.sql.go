@@ -69,6 +69,18 @@ func (q *Queries) GetFeed(ctx context.Context, url string) (uuid.UUID, error) {
 	return id, err
 }
 
+const getFeedName = `-- name: GetFeedName :one
+SELECT name FROM feeds
+WHERE id = $1
+`
+
+func (q *Queries) GetFeedName(ctx context.Context, id uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getFeedName, id)
+	var name string
+	err := row.Scan(&name)
+	return name, err
+}
+
 const getFeeds = `-- name: GetFeeds :many
 SELECT id, created_at, updated_at, name, url, user_id FROM feeds
 `
