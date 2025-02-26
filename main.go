@@ -72,3 +72,16 @@ func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) 
 		return handler(s, cmd, user)
 	}
 }
+
+// func scrapeFeeds(s *state) error {
+// 	feed_to_fetch, err := s.db.GetNextFeedToFetch(context.Background())
+// 	if err != nil {
+// 		return err
+// 	}
+// 	feed_to_fetch.LastFetchedAt = sql.NullTime{Time: time.Now()}
+// 	new_feed, err := FetchFeed(context.Background(), feed_to_fetch.Url)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// }
