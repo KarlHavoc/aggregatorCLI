@@ -42,7 +42,7 @@ func main() {
 	cmds.register("register", handlerRegister)
 	cmds.register("reset", handlerReset)
 	cmds.register("users", handlerUsers)
-	// cmds.register("agg", cmds.aggregate)
+	cmds.register("agg", cmds.aggregate)
 	cmds.register("addfeed", middlewareLoggedIn(handlerAddFeed))
 	cmds.register("feeds", handlerFeeds)
 	cmds.register("follow", middlewareLoggedIn(handlerFollow))
@@ -73,15 +73,18 @@ func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) 
 	}
 }
 
-// func scrapeFeeds(s *state) error {
-// 	feed_to_fetch, err := s.db.GetNextFeedToFetch(context.Background())
-// 	if err != nil {
-// 		return err
-// 	}
-// 	feed_to_fetch.LastFetchedAt = sql.NullTime{Time: time.Now()}
-// 	new_feed, err :=
-// 	if err != nil {
-// 		return err
-// 	}
-
-// }
+func scrapeFeeds(s *state) error {
+	feed_to_fetch, err := s.db.GetNextFeedToFetch(context.Background())
+	if err != nil {
+		return err
+	}
+	s.db.MarkFeedFetched(context.Background(), feed_to_fetch.ID)
+	new_feed, err := fetchFeed(context.Background(), feed_to_fetch.Url)
+	if err != nil {
+		return err
+	}
+	for _, item := range new_feed.Channel.Item {
+		fmt.Println(item.Title)
+	}
+	return nil
+}

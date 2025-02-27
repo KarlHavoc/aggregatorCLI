@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"time"
 )
 
 type command struct {
@@ -26,14 +28,20 @@ func (c commands) run(s *state, cmd command) error {
 
 }
 
-// func (c commands) aggregate(s *state, cmd command) error {
-// 	rss_feed, err := fetchFeed()
-// 	fmt.Println(rss_feed.Channel.Title)
-// 	fmt.Println(rss_feed.Channel.Description)
-// 	for _, item := range rss_feed.Channel.Item {
-// 		fmt.Println(item.Title)
-// 		fmt.Println(item.Description)
-// 	}
-// 	return nil
+func (c commands) aggregate(s *state, cmd command) error {
+	time_between_reqs := cmd.Arguments[0]
+	duration, err := time.ParseDuration(time_between_reqs)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Collecting feeds every %v\n", duration)
+	ticker := time.NewTicker(duration)
+	for ; ; <-ticker.C {
+		fmt.Print("\n\n")
+		fmt.Println("Scraping feeds...")
+		fmt.Print("\n\n")
+		scrapeFeeds(s)
+		fmt.Print("\n\n")
+	}
 
-// }
+}
