@@ -10,7 +10,7 @@ editor of choice.
 
 `nvim ~/.gatorconfig.json`
 
-Put this in the config file, but replace <username> with your local username.  If you're
+Put this in the config file, but replace \<username\> with your local username.  If you're
 not sure what your's is, a simple `whoami` in the terminal will give you your logged in 
 username.
 
