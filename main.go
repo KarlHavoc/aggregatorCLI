@@ -11,8 +11,8 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 
-	internal "github.com/KarlHavoc/aggregatorCLI/internal/config"
-	"github.com/KarlHavoc/aggregatorCLI/internal/database"
+	internal "github.com/KarlHavoc/gator/internal/config"
+	"github.com/KarlHavoc/gator/internal/database"
 )
 
 type state struct {
@@ -50,6 +50,7 @@ func main() {
 	cmds.register("follow", middlewareLoggedIn(handlerFollow))
 	cmds.register("following", middlewareLoggedIn(handlerFollowing))
 	cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	cmds.register("browse", middlewareLoggedIn(handlerBrowse))
 
 	if len(os.Args) < 2 {
 		log.Fatalf("Usage: cli <command> [args...]")

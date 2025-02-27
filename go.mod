@@ -1,4 +1,4 @@
-module github.com/KarlHavoc/aggregatorCLI
+module github.com/KarlHavoc/gator
 
 go 1.22.5
 

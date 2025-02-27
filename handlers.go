@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"html"
+	"strconv"
+
 	//"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"github.com/KarlHavoc/aggregatorCLI/internal/database"
+	"github.com/KarlHavoc/gator/internal/database"
 	"github.com/google/uuid"
 )
 
@@ -185,6 +188,33 @@ func handlerUnfollow(s *state, cmd command, user database.User) error {
 	})
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func handlerBrowse(s *state, cmd command, user database.User) error {
+	post_view_limit := 2
+	if len(cmd.Arguments) == 1 {
+		limit, err := strconv.Atoi(cmd.Arguments[0])
+		if err != nil {
+			return err
+		}
+		post_view_limit = limit
+	}
+
+	users_posts, err := s.db.GetPostsForUser(context.Background(), database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  int32(post_view_limit),
+	})
+	if err != nil {
+		return err
+	}
+	for _, post := range users_posts {
+		fmt.Println()
+		fmt.Println(html.UnescapeString(post.Title))
+		fmt.Println(html.UnescapeString(post.Description))
+		fmt.Println()
+
 	}
 	return nil
 }
