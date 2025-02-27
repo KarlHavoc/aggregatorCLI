@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 
 	internal "github.com/KarlHavoc/aggregatorCLI/internal/config"
@@ -84,7 +86,17 @@ func scrapeFeeds(s *state) error {
 		return err
 	}
 	for _, item := range new_feed.Channel.Item {
-		fmt.Println(item.Title)
+		s.db.CreatePost(context.Background(), database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			Title:       item.Title,
+			Url:         item.Link,
+			Description: item.Description,
+			PublishedAt: sql.NullString{String: item.PubDate},
+			FeedID:      feed_to_fetch.ID,
+		})
 	}
+
 	return nil
 }
