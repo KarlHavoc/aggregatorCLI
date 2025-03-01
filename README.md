@@ -22,9 +22,9 @@ log into gator.
 
 # Gator Commands
 ---------------------------------
-####Command list
+#### Command list
 
-`command     <arguments>`
+`command     <arguments>`  - Description 
 
 `register    <username>`
 
