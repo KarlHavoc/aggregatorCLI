@@ -30,5 +30,19 @@ log into gator.
 
 `login  <username> - Logs in with the username`
 
-`
+`users     - Prints all users to the console`
+
+`addfeed <feedname> <feedURL> - Adds a new feed with a feed name and url`
+
+`feeds  - Prints all feeds and the user that created them to the console`
+
+`follow <url_to_follow>  - Follows a feed for the current user`
+
+`unfollow <url_to_unfollow>  - Unfollows a feed for the current user`
+
+`following - Displays the feeds the current user is following`
+
+`browse <number_of_feeds_to_display> - Prints the title and description of the latest feeds to the console.  If left blank, the number of feeds to display argument defaults to 2.`
+
+`agg <time.Duration>   - Aggregates the feeds the current user is following every time.Duration, i.e. the command - agg 1m - would result in fetching the latest feeds once every minute. %s - seconds, %m - minutes, %h - hours`
 

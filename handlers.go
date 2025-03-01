@@ -126,10 +126,11 @@ func handlerFeeds(s *state, cmd command) error {
 		if err != nil {
 			return err
 		}
+		fmt.Println()
 		fmt.Printf("Feed name: %v\n", feed.Name)
 		fmt.Printf("Feed url: %v\n", feed.Url)
 		fmt.Printf("Added by: %v\n", name)
-
+		fmt.Println()
 	}
 	return nil
 }
@@ -154,8 +155,10 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println()
 	fmt.Printf("Feed name: %s\n", new_follow.FeedName)
 	fmt.Printf("Current user: %s\n", user.Name)
+	fmt.Println()
 	return nil
 }
 
@@ -165,14 +168,15 @@ func handlerFollowing(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println()
+	fmt.Println("Following:")
 	for _, feeds := range feeds_following {
 		feed_name, err := s.db.GetFeedName(context.Background(), feeds.FeedID)
 		if err != nil {
 			return nil
 		}
-		fmt.Println("Following:")
-		fmt.Println(feed_name)
-
+		fmt.Printf("  - %v\n", feed_name)
 	}
 	return nil
 }
@@ -189,6 +193,9 @@ func handlerUnfollow(s *state, cmd command, user database.User) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println()
+	fmt.Printf("Unfollowed: %v", cmd.Arguments[0])
+	fmt.Println()
 	return nil
 }
 
