@@ -20,6 +20,10 @@ log into gator.
  "current_user_name": ""
 }`
 
+Install gator:
+
+`go install github.com/KarlHavoc/aggregatorCLI@latest`
+
 # Gator Commands
 ---------------------------------
 #### Command list
