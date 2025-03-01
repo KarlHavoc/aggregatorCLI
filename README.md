@@ -22,7 +22,7 @@ log into gator.
 
 Install gator:
 
-`go install github.com/KarlHavoc/aggregatorCLI@latest`
+`go install github.com/KarlHavoc/gator@latest`
 
 # Gator Commands
 ---------------------------------
