@@ -1,4 +1,5 @@
 # Gator
+----------------------------------
 
 A simple cli tool that aggregates rss feeds and displays the title and description.
 
@@ -10,13 +11,17 @@ editor of choice.
 
 `nvim ~/.gatorconfig.json`
 
-Put this in the config file, but replace \<username\> with your local username.  If you're
-not sure what your's is, a simple `whoami` in the terminal will give you your logged in 
-username.
+Below is the json needed for the config file.  Replace \<username\> with your local username.  If you're not sure what your username is, `whoami` in the terminal will give you your logged in 
+username. Leave current_user_name as an empty string.  This will be replaced once you 
+log into gator.
 
 `{
  "db_url": "postgres://<username>:@localhost:5432/gator?sslmode=disable",
  "current_user_name": ""
 }`
+
+# Gator Commands
+---------------------------------
+
 
 
