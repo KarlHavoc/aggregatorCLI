@@ -24,9 +24,11 @@ log into gator.
 ---------------------------------
 #### Command list
 
-`command     <arguments>`  - Description 
+`command    <arguments>  - Description`
 
-`register    <username>`
+`register   <username>  - Registers a new user with the username`
 
-`login       <username>`
+`login  <username> - Logs in with the username`
+
+`
 
