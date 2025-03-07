@@ -26,8 +26,7 @@ If successful you should be able to connect to the database:
 If your prompt now looks like this `<database_name>=#` you should be good to go.  You can quit psql with `\q` to bring you back to your terminal prompt.
 
 To set up the config file for database and current user, create a json file named 
-.gatorconfig.json to your root directory. I used neovim, but feel free to use your text
-editor of choice.
+.gatorconfig.json to your root directory `touch ~/.gatorconfig.json`. Open the new file with your text editor. I used nvim:
 
 `nvim ~/.gatorconfig.json`
 
@@ -38,7 +37,7 @@ Below is the json needed for the config file.  Replace \<username\> with your lo
  "current_user_name": ""
 }`
 
-Now all that's left to do is install gator:
+Save the file and now all that's left to do is install gator:
 
 `go install github.com/KarlHavoc/gator@latest`
 
