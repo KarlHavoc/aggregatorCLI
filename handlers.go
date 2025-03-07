@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
 	"html"
+	"os/exec"
 	"strconv"
 
 	//"database/sql"
@@ -42,7 +44,8 @@ func handlerRegister(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		Name:      name})
+		Name:      name,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +86,6 @@ func handlerUsers(s *state, cmd command) error {
 }
 
 func handlerAddFeed(s *state, cmd command, user database.User) error {
-
 	if len(cmd.Arguments) != 2 {
 		fmt.Println("please input a valid name and url")
 		os.Exit(1)
@@ -163,7 +165,6 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 }
 
 func handlerFollowing(s *state, cmd command, user database.User) error {
-
 	feeds_following, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		return err
@@ -223,5 +224,29 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 		fmt.Println()
 
 	}
+	return nil
+}
+
+func handlerMigrate(s *state, cmd command) error {
+	if len(s.cfg.DbURL) == 0 {
+		return errors.New("database config not set up yet.  Make sure to follow the readme on the github to set up you config.json file")
+	}
+	// cmd_path := "~/workspace/github.com/KarlHavoc/go_projects/aggregatorCLI/sql/schema"
+	db_string := s.cfg.DbURL
+	migrate_cmd := exec.Command("goose", "postgres "+db_string+" up")
+	fmt.Println(migrate_cmd)
+
+	err := migrate_cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	// cmd_struct := exec.Command("echo", "hello")
+	// out, err := cmd_struct.Output()
+	// if err != nil {
+	// 	return err
+	// }
+	// fmt.Println(string(out))
+
 	return nil
 }
